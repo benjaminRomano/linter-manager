@@ -19,14 +19,14 @@ module.exports =
       @displayMissingPackageNotification('bottom-dock', 'https://atom.io/packages/bottom-dock')
 
     @subscriptions.add(atom.commands.add('atom-workspace', 'linter-manager:add': => @add()))
-    @subscriptions.add(atom.packages.ondiddeactivatepackage((deactivatedPackage) =>
+    @subscriptions.add(atom.packages.onDidActivatePackage((deactivatedPackage) =>
       @onPackageDeactivated(deactivatedPackage)
     ))
 
   displayMissingPackageNotification: (packagename, link) ->
     atom.notifications.addError("Could not find #{packageName}", {
       detail: "Todo-Manager: The #{packageName} package is a dependency. \n
-      Learn more about #{packageName} here: #{link}"
+      Learn more about #{packageName} here: #{link}",
       dismissable: true
     })
 

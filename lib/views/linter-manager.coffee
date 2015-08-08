@@ -1,7 +1,6 @@
 {DockPaneView} = require('atom-bottom-dock')
 {CompositeDisposable, Emitter} = require('atom')
 {$} = require('space-pen')
-_ = require('lodash')
 
 FilterSelector = require('./filter-selector')
 FilterConstants = require('../filter-constants')
