@@ -1,0 +1,14 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'bottom-dock'
+      'submenu': [
+        {
+          'label': 'Add Linter Pane'
+          'command': 'linter-manager:add'
+        }
+      ]
+    ]
+  }
+]

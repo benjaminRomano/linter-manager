@@ -1,0 +1,2 @@
+'atom-workspace':
+  'ctrl-k ctrl-i': 'linter-manager:add'

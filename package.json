@@ -1,0 +1,35 @@
+{
+  "name": "linter-manager",
+  "main": "./lib/main",
+  "version": "0.0.0",
+  "description": "Manage linter messages using bottom-dock",
+  "keywords": [
+    "linter",
+    "messages",
+    "manager"
+  ],
+  "repository": "https://github.com/benjaminRomano/linter-manager",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0"
+  },
+  "dependencies": {
+    "atom-bottom-dock": "^0.3.0",
+    "space-pen": "^5.1.1"
+  },
+  "packageDependencies": {
+    "bottom-dock": "^0.2.0"
+  },
+  "consumedServices": {
+    "bottom-dock": {
+      "versions": {
+        "^0.1.1": "consumeBottomDock"
+      }
+    },
+    "linter-plus-self": {
+      "versions": {
+        "0.1.0": "consumeLinter"
+      }
+    }
+  }
+}

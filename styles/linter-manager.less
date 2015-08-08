@@ -1,0 +1,55 @@
+@import "ui-variables";
+@import 'octicon-utf-codes';
+
+.linter-manager {
+  height: 100%;
+  display: flex;
+  flex-direction:column;
+  margin-left: 5px;
+
+  ul {
+    max-height: 100%;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin: 0;
+    padding: 0 0px 5px 5px;
+    font-size: 13px;
+
+    span {
+      margin: 3px;
+
+    }
+  }
+
+  .filters {
+    padding-bottom: 5px;
+    display: inline-block;
+
+    .filter-label {
+      padding: 0 5px 0 5px
+    }
+  }
+
+  .message-container {
+    overflow: auto;
+    height: 100%;
+    margin-bottom: 10px;
+    .messages-list {
+      .linter-message {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        font-size: @font-size;
+        line-height: 1.2;
+        margin: 3px;
+        & > .badge {
+          align-self: flex-start;
+        }
+      }
+    }
+  }
+}
