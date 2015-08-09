@@ -1,11 +1,10 @@
-{Emitter} = require('atom')
-{View, $} = require('space-pen')
+{Emitter} = require 'atom'
+{View, $} = require 'space-pen'
 
 class FilterSelector extends View
   @content: (config) ->
     @div class: 'filter-selector', =>
-      if config?.label
-        @span outlet: 'filterLabel', class: 'filter-label', config.label
+      @span outlet: 'filterLabel', class: 'filter-label', config.label if config?.label
       @div outlet: 'filterContainer', class: 'btn-group', =>
         if config?.filters
           for filter in config.filters
@@ -15,7 +14,7 @@ class FilterSelector extends View
     @emitter = new Emitter()
 
     @activeFilter = ""
-    @setActiveFilter(config.activeFilter) if config?.activeFilter
+    @setActiveFilter config.activeFilter if config?.activeFilter
 
   updateFilters: (config) ->
     @filterContainer.empty()
@@ -23,29 +22,30 @@ class FilterSelector extends View
     if config.label
       if not @filterLabel
         @filterLabel = $("<span class='filter-label'>#{config.label}</span>")
-        @filterLabel.insertBefore(@filterContainer)
+        @filterLabel.insertBefore @filterContainer
       else
-        @filterLabel.text(config.label)
+        @filterLabel.text config.label
 
     for filter in config.filters
       filterElement = $("<button class='btn' data-name='#{filter.name}'>#{filter.label}</button>")
-      filterElement.on('click', @onFilterChanged)
-      @filterContainer.append(filterElement)
+      filterElement.on 'click', @onFilterChanged
+      @filterContainer.append filterElement
 
-    @setActiveFilter(config.activeFilter)
+    @setActiveFilter config.activeFilter
 
   onDidChangeFilter: (callback) ->
-    return @emitter.on('filter:changed', callback)
+    return @emitter.on 'filter:changed', callback
 
   onFilterChanged: (e) =>
-    @setActiveFilter(e.target.dataset.name)
-    @emitter.emit('filter:changed', @activeFilter)
+    @setActiveFilter e.target.dataset.name
+    @emitter.emit 'filter:changed', @activeFilter
 
   setActiveFilter: (filterName) ->
     @activeFilter = filterName
+
     for child in @filterContainer.children()
       child = $(child)
-      if child.data('name') == @activeFilter
+      if child.data('name') is @activeFilter
         child.addClass('selected')
       else
         child.removeClass('selected')

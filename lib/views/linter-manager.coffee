@@ -1,14 +1,14 @@
-{DockPaneView} = require('atom-bottom-dock')
-{CompositeDisposable, Emitter} = require('atom')
-{$} = require('space-pen')
+{DockPaneView} = require 'atom-bottom-dock'
+{CompositeDisposable, Emitter} = require 'atom'
+{$} = require 'space-pen'
 
-FilterSelector = require('./filter-selector')
-FilterConstants = require('../filter-constants')
-Message = require('./message')
+FilterSelector = require './filter-selector'
+FilterConstants = require '../filter-constants'
+Message = require './message'
 
 class LinterManager extends DockPaneView
   @content: ->
-    @div class: 'linter-manager', =>
+    @div class: 'linter-manager', style: "display:flex;", =>
       @div outlet: 'filters', class: 'filters', =>
         @subview 'fileFilterSelector', new FilterSelector()
       @div outlet: 'messageContainer', class: 'message-container', ->
@@ -27,25 +27,24 @@ class LinterManager extends DockPaneView
       label: 'Messages For:'
       filters: [
         {
-          name: FilterConstants.scope.project
+          name: FilterConstants.SCOPE.PROJECT
         }
         {
-          name: FilterConstants.scope.file
+          name: FilterConstants.SCOPE.FILE
         }
       ]
 
     @messages = []
 
-    @subscriptions.add(@fileFilterSelector.onDidChangeFilter(@onFileFilterChanged))
-    @subscriptions.add(@linter.onDidUpdateMessages(@render))
-    @subscriptions.add(atom.workspace.onDidChangeActivePaneItem( =>
-      @render({ messages: @linter.messages.publicMessages }))
-    )
+    @subscriptions.add @fileFilterSelector.onDidChangeFilter @onFileFilterChanged
+    @subscriptions.add @linter.onDidUpdateMessages @render
+    @subscriptions.add atom.workspace.onDidChangeActivePaneItem =>
+      @render messages: @linter.messages.publicMessages
 
-    @render({ messages: @linter.messages.publicMessages })
+    @render messages: @linter.messages.publicMessages
 
   render: ({messages}) =>
-    @messages = @classifyMessages(messages)
+    @messages = @classifyMessages messages
     @renderFileFilters()
     @renderMessages()
 
@@ -56,29 +55,25 @@ class LinterManager extends DockPaneView
 
   renderFileFilters: ->
     @fileFilters.activeFilter = @linter.state.scope
-    @fileFilters.filters[0].label = FilterConstants.scope.project + ' ' + @count.project
-    @fileFilters.filters[1].label = FilterConstants.scope.file + ' ' + @count.file
-    @fileFilterSelector.updateFilters(@fileFilters)
+    @fileFilters.filters[0].label = "#{FilterConstants.SCOPE.PROJECT} #{@count.project}"
+    @fileFilters.filters[1].label = "#{FilterConstants.SCOPE.FILE} #{@count.file}"
+    @fileFilterSelector.updateFilters @fileFilters
 
   renderMessages: ->
     messages = []
-    if @linter.state.scope is FilterConstants.scope.project
+    if @linter.state.scope is FilterConstants.SCOPE.PROJECT
       messages = @messages
-    else if @linter.state.scope is FilterConstants.scope.file
-      messages = @messages.filter((message) ->
-        return message.currentFile
-      )
-    else if @linter.state.scope is FilterConstants.scope.line
-      messages = @messages.filter((message) ->
-        return message.currentLine
-      )
+    else if @linter.state.scope is FilterConstants.SCOPE.FILE
+      messages = (message for message in @messages when message.currentFile)
+    else if @linter.state.scope is FilterConstants.SCOPE.LINE
+      messages = (message for message in @messages when message.currentLine)
 
     @messageContainer.empty()
 
     for message in messages
-      @messageContainer.append(new Message(message, {
-        addPath: @linter.state.scope is FilterConstants.scope.project
-      }))
+      @messageContainer.append new Message(message, {
+        addPath: @linter.state.scope is FilterConstants.SCOPE.PROJECT
+      })
 
   classifyMessages: (messages) ->
     filePath = atom.workspace.getActiveTextEditor()?.getPath()
@@ -88,14 +83,14 @@ class LinterManager extends DockPaneView
       if message.currentFile = (filePath and message.filePath is filePath)
         @count.file++
       @count.project++
-    return @classifyMessagesByLine(messages)
+    return @classifyMessagesByLine messages
 
   classifyMessagesByLine: (messages) ->
     row = atom.workspace.getActiveTextEditor()?.getCursorBufferPosition().row
     @count.line = 0
     for key, message of messages
-      if message.currentLine = (message.currentFile and message.range and message.range.intersectsRow(row))
-        @count.Line++
+      if message.currentLine = (message.currentFile and message.range and message.range.intersectsRow row)
+        @count.line++
     return messages
 
   refresh: ->

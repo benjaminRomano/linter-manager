@@ -1,4 +1,4 @@
-{View} = require('space-pen')
+{View} = require 'space-pen'
 
 class Message extends View
   @content: (message) ->
@@ -12,21 +12,25 @@ class Message extends View
 
   initialize: (@message, @options) ->
     messageLocation = ""
-    messageLocation = "at line #{@message.range.start.row + 1} col #{@message.range.start.column + 1} " if @message.range
+    if @message.range
+      messageLocation = "at line #{@message.range.start.row + 1} col #{@message.range.start.column + 1} "
 
     if @options?.addPath
       displayFile = @message.filePath
       for path in atom.project.getPaths()
-        continue if @message.filePath.indexOf(path) isnt 0 or displayFile isnt @message.filePath # Avoid double replacing
-        displayFile = @message.filePath.substr( path.length + 1 ) # Remove the trailing slash as well
+        # Avoid double replacing
+        continue if @message.filePath.indexOf(path) isnt 0 or displayFile isnt @message.filePath
+
+        # Remove the trailing slash as well
+        displayFile = @message.filePath.substr(path.length + 1)
+
       messageLocation += "in #{displayFile}"
 
     if messageLocation
-      @messageLocation.text(messageLocation)
+      @messageLocation.text messageLocation
 
   onClick: =>
-    if @message.filePath
-      @goToMatch(@message.filePath, @message.range)
+    @goToMatch @message.filePath, @message.range if @message.filePath
 
   goToMatch: (filePath, range) ->
     atom.workspace.open(filePath).then ->

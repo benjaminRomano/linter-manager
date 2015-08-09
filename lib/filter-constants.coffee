@@ -1,4 +1,5 @@
 module.exports =
-  scope:
-    file: 'File'
-    project: 'Project'
+  SCOPE:
+    FILE: 'File'
+    PROJECT: 'Project'
+    LINE: 'Line'
