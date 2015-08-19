@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "atom-bottom-dock": "^0.3.0",
-    "space-pen": "^5.1.1"
+    "space-pen": "^5.1.1",
+    "tablesorter": "^2.23.0"
   },
   "packageDependencies": {
     "bottom-dock": "^0.2.0"
@@ -23,7 +24,7 @@
   "consumedServices": {
     "bottom-dock": {
       "versions": {
-        "^0.1.1": "consumeBottomDock"
+        "^0.2.0": "consumeBottomDock"
       }
     },
     "linter-plus-self": {

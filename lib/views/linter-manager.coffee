@@ -4,18 +4,36 @@
 
 FilterSelector = require './filter-selector'
 FilterConstants = require '../filter-constants'
-Message = require './message'
 
 class LinterManager extends DockPaneView
   @content: ->
-    @div class: 'linter-manager', style: "display:flex;", =>
+    @div class: 'linter-manager', style: 'display:flex;', =>
       @div outlet: 'filters', class: 'filters', =>
         @subview 'fileFilterSelector', new FilterSelector()
-      @div outlet: 'messageContainer', class: 'message-container', ->
+      @div outlet: 'messageContainer', class: 'message-container', =>
+        @table outlet: 'messageTable', class: 'tablesorter tablesorter-atom linter-table', =>
+          @thead =>
+            @th 'type'
+            @th 'description'
+            @th 'file'
+            @th 'line'
+          @tbody outlet: 'messageTableBody'
 
   initialize: (@linter) ->
     super()
     @subscriptions = new CompositeDisposable()
+
+    # TODO: Look into why this needs to be done
+    # Updating jQuery elements to use the extended jQuery
+    @messageTableBody = $(@messageTableBody)
+    @messageTable = $(@messageTable)
+
+    @messageTable.tablesorter
+      theme: 'atom'
+      widgets: ['zebra', 'stickyHeaders','resizable']
+      widgetOptions:
+        resizable: true
+        stickyHeaders_attachTo: @messageContainer
 
     @count =
       file: 0
@@ -68,12 +86,38 @@ class LinterManager extends DockPaneView
     else if @linter.state.scope is FilterConstants.SCOPE.LINE
       messages = (message for message in @messages when message.currentLine)
 
-    @messageContainer.empty()
+    @messageTableBody.empty()
 
     for message in messages
-      @messageContainer.append new Message(message, {
-        addPath: @linter.state.scope is FilterConstants.SCOPE.PROJECT
-      })
+      @messageTableBody.append(@createMessageRow(message))
+
+    @messageTableBody.trigger 'update'
+
+  createMessageRow: (message) ->
+    lineNumber = message.range?.start.row + 1 ? ""
+
+    displayFile = message.filePath
+    for path in atom.project.getPaths()
+      # Avoid double replacing
+      continue if message.filePath.indexOf(path) isnt 0 or displayFile isnt message.filePath
+
+      # Remove the trailing slash as well
+      displayFile = message.filePath.substr(path.length + 1)
+
+    row = $("<tr>
+      <td>#{message.type}</td>
+      <td>#{message.text}</td>
+      <td>#{displayFile}</td>
+      <td>#{lineNumber}</td>
+    </tr>")
+
+    row.on 'click', =>
+      @goToMatch message.filePath, message.range if message.filePath
+
+  goToMatch: (filePath, range) ->
+    atom.workspace.open(filePath).then ->
+      return unless range
+      atom.workspace.getActiveTextEditor().setCursorBufferPosition(range.start)
 
   classifyMessages: (messages) ->
     filePath = atom.workspace.getActiveTextEditor()?.getPath()

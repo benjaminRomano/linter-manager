@@ -1,6 +1,7 @@
 {CompositeDisposable} = require 'atom'
-{BasicTabButton} = require 'atom-bottom-dock'
 LinterManager = require './views/linter-manager'
+window.jQuery = require('space-pen').$
+require 'tablesorter'
 
 module.exports =
   activate: ->
@@ -49,14 +50,7 @@ module.exports =
       newPane = new LinterManager @linter
       @panes.push newPane
 
-      config =
-        name: 'Linter'
-        id: newPane.getId()
-        active: newPane.isActive()
-
-      newTabButton = new BasicTabButton config
-
-      @bottomDock.addPane newPane, newTabButton
+      @bottomDock.addPane newPane, 'Linter'
 
   deactivate: ->
     @subscriptions.dispose()

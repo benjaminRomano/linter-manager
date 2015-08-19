@@ -2,10 +2,10 @@
 @import 'octicon-utf-codes';
 
 .linter-manager {
+  overflow: hidden;
   height: 100%;
   display: flex;
   flex-direction:column;
-  margin-left: 5px;
 
   ul {
     max-height: 100%;
@@ -36,19 +36,23 @@
 
   .message-container {
     overflow: auto;
-    height: 100%;
-    margin-bottom: 10px;
-    .messages-list {
-      .linter-message {
-        display: flex;
-        align-items: flex-end;
-        flex-wrap: wrap;
-        font-size: @font-size;
-        line-height: 1.2;
-        margin: 3px;
-        & > .badge {
-          align-self: flex-start;
-        }
+    flex: 1 1;
+
+    .linter-table {
+      table-layout:fixed;
+
+      td {
+        cursor: pointer;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 20px;
+      }
+      th {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 20px;
+        font-weight: normal;
       }
     }
   }
