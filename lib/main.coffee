@@ -1,7 +1,5 @@
 {CompositeDisposable} = require 'atom'
 LinterManager = require './views/linter-manager'
-window.jQuery = require('space-pen').$
-require 'tablesorter'
 
 module.exports =
   activate: ->

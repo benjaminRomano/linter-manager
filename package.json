@@ -15,8 +15,7 @@
   },
   "dependencies": {
     "atom-bottom-dock": "^0.3.0",
-    "space-pen": "^5.1.1",
-    "tablesorter": "^2.23.0"
+    "space-pen": "^5.1.1"
   },
   "packageDependencies": {
     "bottom-dock": "^0.2.0"

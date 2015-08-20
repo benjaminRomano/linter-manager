@@ -1,39 +1,21 @@
-{DockPaneView} = require 'atom-bottom-dock'
+{DockPaneView, Toolbar, SortableTable, FilterSelector} = require 'atom-bottom-dock'
 {CompositeDisposable, Emitter} = require 'atom'
 {$} = require 'space-pen'
 
-FilterSelector = require './filter-selector'
 FilterConstants = require '../filter-constants'
 
 class LinterManager extends DockPaneView
   @content: ->
     @div class: 'linter-manager', style: 'display:flex;', =>
-      @div outlet: 'filters', class: 'filters', =>
-        @subview 'fileFilterSelector', new FilterSelector()
-      @div outlet: 'messageContainer', class: 'message-container', =>
-        @table outlet: 'messageTable', class: 'tablesorter tablesorter-atom linter-table', =>
-          @thead =>
-            @th 'type'
-            @th 'description'
-            @th 'file'
-            @th 'line'
-          @tbody outlet: 'messageTableBody'
+      @subview 'toolbar', new Toolbar()
+      @subview 'messageTable', new SortableTable headers: ['type', 'description', 'file', 'line']
 
   initialize: (@linter) ->
     super()
     @subscriptions = new CompositeDisposable()
 
-    # TODO: Look into why this needs to be done
-    # Updating jQuery elements to use the extended jQuery
-    @messageTableBody = $(@messageTableBody)
-    @messageTable = $(@messageTable)
-
-    @messageTable.tablesorter
-      theme: 'atom'
-      widgets: ['zebra', 'stickyHeaders','resizable']
-      widgetOptions:
-        resizable: true
-        stickyHeaders_attachTo: @messageContainer
+    @fileFilterSelector = new FilterSelector()
+    @toolbar.addLeftTile item: @fileFilterSelector, priority: 0
 
     @count =
       file: 0
@@ -86,12 +68,12 @@ class LinterManager extends DockPaneView
     else if @linter.state.scope is FilterConstants.SCOPE.LINE
       messages = (message for message in @messages when message.currentLine)
 
-    @messageTableBody.empty()
+    @messageTable.body.empty()
 
     for message in messages
-      @messageTableBody.append(@createMessageRow(message))
+      @messageTable.body.append(@createMessageRow(message))
 
-    @messageTableBody.trigger 'update'
+    @messageTable.body.trigger 'update'
 
   createMessageRow: (message) ->
     lineNumber = message.range?.start.row + 1 ? ""
