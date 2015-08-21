@@ -27,10 +27,10 @@ class LinterManager extends DockPaneView
       label: 'Messages For:'
       filters: [
         {
-          name: FilterConstants.SCOPE.PROJECT
+          value: FilterConstants.SCOPE.PROJECT
         }
         {
-          name: FilterConstants.SCOPE.FILE
+          value: FilterConstants.SCOPE.FILE
         }
       ]
 

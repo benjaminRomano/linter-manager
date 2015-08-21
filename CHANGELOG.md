@@ -1,3 +1,7 @@
+## 0.2.0
+* Changed linter-manager to use table-sorter to display information
+* Moved filter options to toolbar
+
 ## 0.1.2
 * Updated code to follow https://github.com/polarmobile/coffeescript-style-guide
 * Fixes to package activation/deactivation handling

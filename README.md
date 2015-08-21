@@ -9,7 +9,8 @@ Manage linter messages using bottom-dock.
 * ctrl-k ctrl-r: refreshes window
 * ctrl-k ctrl-c: closes window
 * ctrl-k ctrl-i: adds linter pane
+* right-click table headers: reset table header widths
 
-![image](https://cloud.githubusercontent.com/assets/9221137/9151860/3dbed7f6-3dd9-11e5-835f-3d564695ec67.png)
+![image](https://cloud.githubusercontent.com/assets/9221137/9418261/4c7b5226-4818-11e5-9940-ef54153698ad.png)
 
 Note: This is a WIP and may be missing some features from the linter package
