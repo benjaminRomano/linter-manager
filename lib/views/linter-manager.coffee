@@ -8,7 +8,7 @@ class LinterManager extends DockPaneView
   @content: ->
     @div class: 'linter-manager', style: 'display:flex;', =>
       @subview 'toolbar', new Toolbar()
-      @subview 'messageTable', new SortableTable headers: ['type', 'description', 'file', 'line']
+      @subview 'messageTable', new SortableTable headers: ['Type', 'Description', 'Path', 'Line']
 
   initialize: (@linter) ->
     super()
