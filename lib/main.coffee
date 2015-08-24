@@ -1,3 +1,5 @@
+{$} = require 'space-pen'
+window.jQuery = $
 {CompositeDisposable} = require 'atom'
 LinterManager = require './views/linter-manager'
 
