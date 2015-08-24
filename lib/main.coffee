@@ -60,6 +60,9 @@ module.exports =
     @subscriptions.add @bottomDock.onDidDeletePane (id) =>
       @onPaneDeleted(id)
 
+    @subscriptions.add @bottomDock.onDidFinishResizing =>
+      pane.resize() for pane in @panes
+
     if @linter and @panes.length is 0
       @add()
 

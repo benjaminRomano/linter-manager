@@ -1,4 +1,4 @@
-{DockPaneView, Toolbar, SortableTable, FilterSelector} = require 'atom-bottom-dock'
+{DockPaneView, Toolbar, TableView, FilterSelector} = require 'atom-bottom-dock'
 {CompositeDisposable, Emitter} = require 'atom'
 {$} = require 'space-pen'
 
@@ -8,10 +8,10 @@ class LinterManager extends DockPaneView
   @content: ->
     @div class: 'linter-manager', style: 'display:flex;', =>
       @subview 'toolbar', new Toolbar()
-      @subview 'messageTable', new SortableTable headers: ['Type', 'Description', 'Path', 'Line']
 
   initialize: (@linter) ->
     super()
+
     @subscriptions = new CompositeDisposable()
 
     @fileFilterSelector = new FilterSelector()
@@ -36,12 +36,33 @@ class LinterManager extends DockPaneView
 
     @messages = []
 
+    columns = [
+      {id: "type", name: "Type", field: "type", sortable: true }
+      {id: "description", name: "Description", field: "description", sortable: true }
+      {id: "path", name: "Path", field: "path", sortable: true }
+      {id: "line", name: "Line", field: "line", sortable: true }
+    ]
+
+    @table = new TableView [], columns
+    @append @table
+
+    @table.onDidClickGridItem (row) =>
+      @goToMatch row.message.filePath, row.message.range if row.message.filePath
+
     @subscriptions.add @fileFilterSelector.onDidChangeFilter @onFileFilterChanged
     @subscriptions.add @linter.onDidUpdateMessages @render
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem =>
       @render messages: @linter.messages.publicMessages
 
-    @render messages: @linter.messages.publicMessages
+    @table.onDidFinishAttaching =>
+      @render messages: @linter.messages.publicMessages
+
+  setActive: (active) ->
+    super(active)
+    @table?.resize(true) if active
+
+  resize: ->
+    @table.resize(true)
 
   render: ({messages}) =>
     @messages = @classifyMessages messages
@@ -68,14 +89,13 @@ class LinterManager extends DockPaneView
     else if @linter.state.scope is FilterConstants.SCOPE.LINE
       messages = (message for message in @messages when message.currentLine)
 
-    @messageTable.body.empty()
+    @table.deleteAllRows()
 
-    for message in messages
-      @messageTable.body.append(@createMessageRow(message))
 
-    @messageTable.body.trigger 'update'
+    data = (@createRow message  for message in messages)
+    @table.addRows data
 
-  createMessageRow: (message) ->
+  createRow: (message) ->
     lineNumber = message.range?.start.row + 1 ? ""
 
     displayFile = message.filePath
@@ -86,15 +106,12 @@ class LinterManager extends DockPaneView
       # Remove the trailing slash as well
       displayFile = message.filePath.substr(path.length + 1)
 
-    row = $("<tr>
-      <td>#{message.type}</td>
-      <td>#{message.text}</td>
-      <td>#{displayFile}</td>
-      <td>#{lineNumber}</td>
-    </tr>")
-
-    row.on 'click', =>
-      @goToMatch message.filePath, message.range if message.filePath
+    row =
+      type: message.type
+      description: message.text
+      path: displayFile
+      line: lineNumber
+      message: message
 
   goToMatch: (filePath, range) ->
     atom.workspace.open(filePath).then ->
@@ -118,8 +135,6 @@ class LinterManager extends DockPaneView
       if message.currentLine = (message.currentFile and message.range and message.range.intersectsRow row)
         @count.line++
     return messages
-
-  refresh: ->
 
   destroy: ->
     @subscriptions.dispose if @subscriptions

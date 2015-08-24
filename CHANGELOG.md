@@ -1,3 +1,6 @@
+## 0.2.1
+* Replaced tablesorter with slickgrid
+
 ## 0.2.0
 * Changed linter-manager to use table-sorter to display information
 * Moved filter options to toolbar

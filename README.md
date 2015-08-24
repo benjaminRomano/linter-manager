@@ -9,7 +9,7 @@ Manage linter messages using bottom-dock.
 * ctrl-k ctrl-r: refreshes window
 * ctrl-k ctrl-c: closes window
 * ctrl-k ctrl-i: adds linter pane
-* right-click table headers: reset table header widths
+* shift-click headers: sort using multiple columns
 
 ![image](https://cloud.githubusercontent.com/assets/9221137/9418261/4c7b5226-4818-11e5-9940-ef54153698ad.png)
 
