@@ -1,3 +1,6 @@
+## 0.2.3
+* Fix for tabs package bug caused by slickgrid
+
 ## 0.2.2
 * Fix for jquery module not loaded
 
