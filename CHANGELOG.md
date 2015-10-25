@@ -1,3 +1,6 @@
+## 0.2.4
+* Added linter field to table
+
 ## 0.2.3
 * Fix for tabs package bug caused by slickgrid
 

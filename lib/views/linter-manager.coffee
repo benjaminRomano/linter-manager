@@ -37,6 +37,7 @@ class LinterManager extends DockPaneView
     @messages = []
 
     columns = [
+      {id: "linter", name: "Linter", field: "linter", sortable: true }
       {id: "type", name: "Type", field: "type", sortable: true }
       {id: "description", name: "Description", field: "description", sortable: true }
       {id: "path", name: "Path", field: "path", sortable: true }
@@ -96,6 +97,7 @@ class LinterManager extends DockPaneView
     @table.addRows data
 
   createRow: (message) ->
+    console.log message
     lineNumber = message.range?.start.row + 1 ? ""
 
     displayFile = message.filePath
@@ -107,6 +109,7 @@ class LinterManager extends DockPaneView
       displayFile = message.filePath.substr(path.length + 1)
 
     row =
+      linter: message.linter
       type: message.type
       description: message.text
       path: displayFile
