@@ -20,7 +20,6 @@ class LinterManager extends DockPaneView
     @count =
       file: 0
       project: 0
-      line: 0
 
     @fileFilters =
       activeFilter: @linter.state.scope
@@ -36,10 +35,13 @@ class LinterManager extends DockPaneView
 
     @messages = []
 
+    descriptionFormatter = (row, cell, value, columnDef, dataContext) ->
+      return value
+
     columns = [
       {id: "linter", name: "Linter", field: "linter", sortable: true }
       {id: "type", name: "Type", field: "type", sortable: true }
-      {id: "description", name: "Description", field: "description", sortable: true }
+      {id: "description", name: "Description", field: "description", formatter: descriptionFormatter, sortable: true }
       {id: "path", name: "Path", field: "path", sortable: true }
       {id: "line", name: "Line", field: "line", sortable: true }
     ]
@@ -53,10 +55,10 @@ class LinterManager extends DockPaneView
     @subscriptions.add @fileFilterSelector.onDidChangeFilter @onFileFilterChanged
     @subscriptions.add @linter.onDidUpdateMessages @render
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem =>
-      @render messages: @linter.messages.publicMessages
+      @render messages: @linter.getMessages()
 
     @table.onDidFinishAttaching =>
-      @render messages: @linter.messages.publicMessages
+      @render messages: @linter.getMessages()
 
   setActive: (active) ->
     super(active)
@@ -65,8 +67,8 @@ class LinterManager extends DockPaneView
   resize: ->
     @table.resize(true)
 
-  render: ({messages}) =>
-    @messages = @classifyMessages messages
+  render: ({@messages}) =>
+    @countMessages()
     @renderFileFilters()
     @renderMessages()
 
@@ -97,7 +99,6 @@ class LinterManager extends DockPaneView
     @table.addRows data
 
   createRow: (message) ->
-    console.log message
     lineNumber = message.range?.start.row + 1 ? ""
 
     displayFile = message.filePath
@@ -111,7 +112,7 @@ class LinterManager extends DockPaneView
     row =
       linter: message.linter
       type: message.type
-      description: message.text
+      description: message.text || message.html
       path: displayFile
       line: lineNumber
       message: message
@@ -121,23 +122,15 @@ class LinterManager extends DockPaneView
       return unless range
       atom.workspace.getActiveTextEditor().setCursorBufferPosition(range.start)
 
-  classifyMessages: (messages) ->
-    filePath = atom.workspace.getActiveTextEditor()?.getPath()
-    @count.file = 0
-    @count.project = 0
-    for key, message of messages
-      if message.currentFile = (filePath and message.filePath is filePath)
-        @count.file++
-      @count.project++
-    return @classifyMessagesByLine messages
+  countMessages: () ->
+      @count.file = 0
+      @count.project = 0
 
-  classifyMessagesByLine: (messages) ->
-    row = atom.workspace.getActiveTextEditor()?.getCursorBufferPosition().row
-    @count.line = 0
-    for key, message of messages
-      if message.currentLine = (message.currentFile and message.range and message.range.intersectsRow row)
-        @count.line++
-    return messages
+      return unless @messages
+
+      for key, message of @messages
+        @count.file++ if message.currentFile
+        @count.project++
 
   destroy: ->
     @subscriptions.dispose if @subscriptions

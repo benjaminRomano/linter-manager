@@ -1,3 +1,7 @@
+## 0.2.5
+* Added support for custom html in messages
+* Performance improvements
+
 ## 0.2.4
 * Added linter field to table
 
