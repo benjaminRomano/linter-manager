@@ -1,3 +1,6 @@
+## 0.2.6
+* Updated atom-bottom-dock version. Fixes sorting issues
+
 ## 0.2.5
 * Added support for custom html in messages
 * Performance improvements

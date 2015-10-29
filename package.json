@@ -14,7 +14,7 @@
     "atom": ">=1.0.0"
   },
   "dependencies": {
-    "atom-bottom-dock": "^0.5.1",
+    "atom-bottom-dock": "^0.5.2",
     "space-pen": "^5.1.1"
   },
   "packageDependencies": {
