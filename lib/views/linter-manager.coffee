@@ -71,7 +71,6 @@ class LinterManager extends DockPaneView
     @table.resize(true)
 
   render: ({@messages}) =>
-    console.log @messages
     @countMessages()
     @renderFileFilters()
     @renderMessages()
@@ -88,7 +87,6 @@ class LinterManager extends DockPaneView
     @fileFilterSelector.updateFilters @fileFilters
 
   renderMessages: ->
-    console.log @messages
     messages = []
     if @linter.state.scope is FilterConstants.SCOPE.PROJECT
       messages = @messages
