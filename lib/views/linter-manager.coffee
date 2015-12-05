@@ -35,8 +35,11 @@ class LinterManager extends DockPaneView
 
     @messages = []
 
-    descriptionFormatter = (row, cell, value, columnDef, dataContext) ->
-      return value
+    descriptionFormatter = (row, cell, data, columnDef, dataContext) ->
+      return data.value if data.isHtml
+      return data.value.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+
+
 
     columns = [
       {id: "linter", name: "Linter", field: "linter", sortable: true }
@@ -68,6 +71,7 @@ class LinterManager extends DockPaneView
     @table.resize(true)
 
   render: ({@messages}) =>
+    console.log @messages
     @countMessages()
     @renderFileFilters()
     @renderMessages()
@@ -84,6 +88,7 @@ class LinterManager extends DockPaneView
     @fileFilterSelector.updateFilters @fileFilters
 
   renderMessages: ->
+    console.log @messages
     messages = []
     if @linter.state.scope is FilterConstants.SCOPE.PROJECT
       messages = @messages
@@ -112,7 +117,10 @@ class LinterManager extends DockPaneView
     row =
       linter: message.linter
       type: message.type
-      description: message.text || message.html
+      description: {
+        isHtml: !!message.html
+        value: message.text || message.html
+      }
       path: displayFile
       line: lineNumber
       message: message
@@ -123,14 +131,14 @@ class LinterManager extends DockPaneView
       atom.workspace.getActiveTextEditor().setCursorBufferPosition(range.start)
 
   countMessages: () ->
-      @count.file = 0
-      @count.project = 0
+    @count.file = 0
+    @count.project = 0
 
-      return unless @messages
+    return unless @messages
 
-      for key, message of @messages
-        @count.file++ if message.currentFile
-        @count.project++
+    for key, message of @messages
+      @count.file++ if message.currentFile
+      @count.project++
 
   destroy: ->
     @subscriptions.dispose if @subscriptions

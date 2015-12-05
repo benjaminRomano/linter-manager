@@ -1,3 +1,6 @@
+## 0.2.7
+* Fixed html tags for non-html messages being displayed incorrectly
+
 ## 0.2.6
 * Updated atom-bottom-dock version. Fixes sorting issues
 
