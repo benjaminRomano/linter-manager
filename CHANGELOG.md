@@ -1,3 +1,6 @@
+## 0.2.8
+* Removed logging
+
 ## 0.2.7
 * Fixed html tags for non-html messages being displayed incorrectly
 
