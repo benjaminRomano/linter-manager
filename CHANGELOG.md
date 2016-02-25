@@ -1,3 +1,6 @@
+## 0.2.9
+* Fixed linter-messages without filePaths causing errors
+
 ## 0.2.8
 * Removed logging
 

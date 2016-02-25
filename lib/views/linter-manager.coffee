@@ -105,12 +105,14 @@ class LinterManager extends DockPaneView
     lineNumber = message.range?.start.row + 1 ? ""
 
     displayFile = message.filePath
-    for path in atom.project.getPaths()
-      # Avoid double replacing
-      continue if message.filePath.indexOf(path) isnt 0 or displayFile isnt message.filePath
+    
+    if displayFile
+        for path in atom.project.getPaths()
+          # Avoid double replacing
+          continue if message.filePath.indexOf(path) isnt 0 or displayFile isnt message.filePath
 
-      # Remove the trailing slash as well
-      displayFile = message.filePath.substr(path.length + 1)
+          # Remove the trailing slash as well
+          displayFile = message.filePath.substr(path.length + 1)
 
     row =
       linter: message.linter
