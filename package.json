@@ -1,7 +1,7 @@
 {
   "name": "linter-manager",
   "main": "./lib/main",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Manage linter messages using bottom-dock",
   "keywords": [
     "linter",
