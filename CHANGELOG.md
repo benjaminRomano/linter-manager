@@ -1,3 +1,6 @@
+## 0.2.11
+* Added isInitial param when adding pane.
+
 ## 0.2.10
 * Added erorr message when linter package is not enabled
 

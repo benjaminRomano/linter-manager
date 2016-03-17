@@ -39,8 +39,6 @@ class LinterManager extends DockPaneView
       return data.value if data.isHtml
       return data.value.replace(/</g, "&lt;").replace(/>/g, "&gt;")
 
-
-
     columns = [
       {id: "linter", name: "Linter", field: "linter", sortable: true }
       {id: "type", name: "Type", field: "type", sortable: true }

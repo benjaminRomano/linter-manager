@@ -45,7 +45,7 @@ module.exports =
   onPaneDeleted: (id) ->
     @panes = (pane for pane in @panes when pane.getId() isnt id)
 
-  add: ->
+  add: (isInitial) ->
     if atom.packages.isPackageDisabled 'linter'
       atom.notifications.addError "Cannot add linter pane",
         detail: "The linter package needs to enabled before a linter pane can be added"
@@ -55,7 +55,7 @@ module.exports =
       newPane = new LinterManager @linter
       @panes.push newPane
 
-      @bottomDock.addPane newPane, 'Linter'
+      @bottomDock.addPane newPane, 'Linter', isInitial
 
   deactivate: ->
     @subscriptions.dispose()
@@ -71,8 +71,8 @@ module.exports =
       pane.resize() for pane in @panes
 
     if @linter and @panes.length is 0
-      @add()
+      @add true
 
   consumeLinter: (@linter) ->
     if @bottomDock and @panes.length is 0
-      @add()
+      @add true
