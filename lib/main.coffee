@@ -28,7 +28,7 @@ module.exports =
 
   displayMissingPackageNotification: (packageName, link) ->
     atom.notifications.addError "Could not find #{packageName}",
-      detail: "Todo-Manager: The #{packageName} package is a dependency. \n
+      detail: "Linter-Manager: The #{packageName} package is a dependency. \n
         Learn more about #{packageName} here: #{link}"
       dismissable: true
 
@@ -46,7 +46,12 @@ module.exports =
     @panes = (pane for pane in @panes when pane.getId() isnt id)
 
   add: ->
-    if @bottomDock and @linter and not atom.packages.isPackageDisabled 'linter'
+    if atom.packages.isPackageDisabled 'linter'
+      atom.notifications.addError "Cannot add linter pane",
+        detail: "The linter package needs to enabled before a linter pane can be added"
+      return
+  
+    if @bottomDock and @linter
       newPane = new LinterManager @linter
       @panes.push newPane
 

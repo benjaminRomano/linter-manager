@@ -1,3 +1,6 @@
+## 0.2.10
+* Added erorr message when linter package is not enabled
+
 ## 0.2.9
 * Fixed linter-messages without filePaths causing errors
 
