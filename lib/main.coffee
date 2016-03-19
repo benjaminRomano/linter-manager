@@ -53,9 +53,13 @@ module.exports =
   
     if @bottomDock and @linter
       newPane = new LinterManager @linter
+      
       @panes.push newPane
 
       @bottomDock.addPane newPane, 'Linter', isInitial
+      
+      @bottomDock.onDidToggle () =>
+        newPane.resize() if newPane.active && @bottomDock.isActive()
 
   deactivate: ->
     @subscriptions.dispose()
